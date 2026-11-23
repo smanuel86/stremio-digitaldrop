@@ -1,0 +1,38 @@
+{
+  "name": "stremio-digitaldrop",
+  "version": "1.0.0",
+  "description": "Dynamic Stremio catalog addon for the latest digitally available movies and series",
+  "main": "dist/index.js",
+  "scripts": {
+    "build": "tsc && cp -r src/views dist/ 2>/dev/null || true",
+    "start": "node dist/index.js",
+    "dev": "ts-node-dev --respawn --transpile-only src/index.ts",
+    "sync": "node dist/index.js --sync-only"
+  },
+  "keywords": [
+    "stremio",
+    "stremio-addon",
+    "digital-releases",
+    "web-dl",
+    "movies",
+    "series"
+  ],
+  "author": "",
+  "license": "MIT",
+  "dependencies": {
+    "axios": "^1.7.9",
+    "better-sqlite3": "^11.8.1",
+    "cheerio": "^1.0.0",
+    "cors": "^2.8.5",
+    "dotenv": "^16.4.7",
+    "express": "^4.21.2"
+  },
+  "devDependencies": {
+    "@types/better-sqlite3": "^7.6.12",
+    "@types/cors": "^2.8.17",
+    "@types/express": "^5.0.0",
+    "@types/node": "^22.10.7",
+    "ts-node-dev": "^2.0.0",
+    "typescript": "^5.7.3"
+  }
+}

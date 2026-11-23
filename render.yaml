@@ -1,0 +1,13 @@
+services:
+  - type: web
+    name: stremio-digitaldrop
+    env: docker
+    plan: free
+    dockerfilePath: ./Dockerfile
+    envVars:
+      - key: PORT
+        value: 7000
+      - key: SYNC_INTERVAL_MINUTES
+        value: 30
+      - key: MAX_YEAR_LOOKBACK
+        value: 1

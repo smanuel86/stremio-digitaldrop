@@ -1,0 +1,413 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>DigitalDrop - Stremio Addon Configuration</title>
+  <link rel="icon" type="image/png" href="https://cdn-icons-png.flaticon.com/512/3845/3845868.png">
+  <style>
+    :root {
+      --bg: #0e0f12;
+      --card-bg: #181a20;
+      --accent: #6c5ce7;
+      --accent-hover: #5849d4;
+      --accent-glow: rgba(108, 92, 231, 0.35);
+      --text: #ffffff;
+      --text-muted: #8e94a5;
+      --border: #282c37;
+      --success: #00b894;
+    }
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+    }
+    body {
+      background: var(--bg);
+      color: var(--text);
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      padding: 24px 16px;
+    }
+    .container {
+      background: var(--card-bg);
+      border: 1px solid var(--border);
+      border-radius: 16px;
+      max-width: 540px;
+      width: 100%;
+      padding: 32px 28px;
+      box-shadow: 0 10px 40px rgba(0,0,0,0.5);
+    }
+    .header {
+      text-align: center;
+      margin-bottom: 28px;
+    }
+    .logo-badge {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      width: 64px;
+      height: 64px;
+      background: linear-gradient(135deg, #6c5ce7, #a29bfe);
+      border-radius: 16px;
+      margin-bottom: 16px;
+      box-shadow: 0 8px 24px var(--accent-glow);
+    }
+    .logo-badge svg {
+      width: 34px;
+      height: 34px;
+      fill: #fff;
+    }
+    h1 {
+      font-size: 26px;
+      font-weight: 700;
+      letter-spacing: -0.5px;
+      margin-bottom: 6px;
+    }
+    .desc {
+      color: var(--text-muted);
+      font-size: 14px;
+      line-height: 1.5;
+    }
+    .stats-card {
+      background: rgba(255, 255, 255, 0.03);
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      padding: 12px 16px;
+      margin-bottom: 24px;
+      display: flex;
+      justify-content: space-around;
+      text-align: center;
+    }
+    .stat-item .val {
+      font-size: 18px;
+      font-weight: 700;
+      color: var(--success);
+    }
+    .stat-item .lbl {
+      font-size: 11px;
+      text-transform: uppercase;
+      color: var(--text-muted);
+      letter-spacing: 0.5px;
+      margin-top: 2px;
+    }
+    .section-title {
+      font-size: 13px;
+      font-weight: 600;
+      text-transform: uppercase;
+      letter-spacing: 0.8px;
+      color: var(--text-muted);
+      margin-bottom: 12px;
+    }
+    .option-group {
+      background: rgba(255, 255, 255, 0.02);
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      padding: 6px 16px;
+      margin-bottom: 20px;
+    }
+    .option-row {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 12px 0;
+      border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+    }
+    .option-row:last-child {
+      border-bottom: none;
+    }
+    .option-label {
+      font-size: 15px;
+      font-weight: 500;
+    }
+    .option-sub {
+      font-size: 12px;
+      color: var(--text-muted);
+      margin-top: 2px;
+    }
+    /* Switch */
+    .switch {
+      position: relative;
+      display: inline-block;
+      width: 44px;
+      height: 24px;
+    }
+    .switch input {
+      opacity: 0;
+      width: 0;
+      height: 0;
+    }
+    .slider {
+      position: absolute;
+      cursor: pointer;
+      top: 0; left: 0; right: 0; bottom: 0;
+      background-color: #2e3340;
+      transition: .25s;
+      border-radius: 24px;
+    }
+    .slider:before {
+      position: absolute;
+      content: "";
+      height: 18px;
+      width: 18px;
+      left: 3px;
+      bottom: 3px;
+      background-color: white;
+      transition: .25s;
+      border-radius: 50%;
+    }
+    input:checked + .slider {
+      background-color: var(--accent);
+    }
+    input:checked + .slider:before {
+      transform: translateX(20px);
+    }
+    /* Select */
+    select {
+      background: #252833;
+      border: 1px solid var(--border);
+      color: var(--text);
+      padding: 6px 10px;
+      border-radius: 8px;
+      font-size: 14px;
+      outline: none;
+    }
+    .btn-container {
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+      margin-top: 24px;
+    }
+    .btn {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+      width: 100%;
+      padding: 14px;
+      border-radius: 12px;
+      font-size: 15px;
+      font-weight: 600;
+      cursor: pointer;
+      transition: all 0.2s ease;
+      text-decoration: none;
+      border: none;
+    }
+    .btn-primary {
+      background: var(--accent);
+      color: #fff;
+      box-shadow: 0 4px 16px var(--accent-glow);
+    }
+    .btn-primary:hover {
+      background: var(--accent-hover);
+      box-shadow: 0 6px 20px var(--accent-glow);
+      transform: translateY(-1px);
+    }
+    .btn-secondary {
+      background: #232733;
+      color: #ddd;
+      border: 1px solid var(--border);
+    }
+    .btn-secondary:hover {
+      background: #2a2e3d;
+      color: #fff;
+    }
+    .footer-note {
+      text-align: center;
+      font-size: 12px;
+      color: var(--text-muted);
+      margin-top: 18px;
+      line-height: 1.4;
+    }
+    .footer-note a {
+      color: var(--accent);
+      text-decoration: none;
+    }
+    .toast {
+      visibility: hidden;
+      min-width: 200px;
+      background-color: #333;
+      color: #fff;
+      text-align: center;
+      border-radius: 8px;
+      padding: 10px 16px;
+      position: fixed;
+      z-index: 1;
+      bottom: 30px;
+      font-size: 14px;
+      opacity: 0;
+      transition: opacity 0.3s;
+    }
+    .toast.show {
+      visibility: visible;
+      opacity: 1;
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <div class="header">
+      <div class="logo-badge">
+        <svg viewBox="0 0 24 24">
+          <path d="M18 4l2 4h-3l-2-4h-2l2 4h-3l-2-4H8l2 4H7L5 4H4c-1.1 0-1.99.9-1.99 2L2 18c0 1.1.9 2 2 2h16c1.1 0 2-.9 2-2V4h-4zM8 17H6v-2h2v2zm0-4H6v-2h2v2zm0-4H6V7h2v2zm10 8h-8v-6h8v6z"/>
+        </svg>
+      </div>
+      <h1>DigitalDrop</h1>
+      <p class="desc">Dynamic Stremio carousels for the latest movies and series, only once verified digital releases (WEB-DL / BluRay) drop.</p>
+    </div>
+
+    <div class="stats-card">
+      <div class="stat-item">
+        <div class="val" id="stat-movies">{{STATS_MOVIES}}</div>
+        <div class="lbl">Movies</div>
+      </div>
+      <div class="stat-item">
+        <div class="val" id="stat-series">{{STATS_SERIES}}</div>
+        <div class="lbl">Series</div>
+      </div>
+      <div class="stat-item">
+        <div class="val" id="stat-sync" style="font-size: 13px; font-weight: 500; color: #a29bfe; margin-top: 4px;">{{STATS_SYNC}}</div>
+        <div class="lbl">Auto-Sync</div>
+      </div>
+    </div>
+
+    <div class="section-title">Carousels</div>
+    <div class="option-group">
+      <div class="option-row">
+        <div>
+          <div class="option-label">🎬 Latest Digital Movies</div>
+          <div class="option-sub">Rotten Tomatoes & Blu-ray.com verified drops</div>
+        </div>
+        <label class="switch">
+          <input type="checkbox" id="chk-movies" checked>
+          <span class="slider"></span>
+        </label>
+      </div>
+      <div class="option-row">
+        <div>
+          <div class="option-label">📺 Latest Digital Series</div>
+          <div class="option-sub">New seasons and episodes in WEB-DL</div>
+        </div>
+        <label class="switch">
+          <input type="checkbox" id="chk-series" checked>
+          <span class="slider"></span>
+        </label>
+      </div>
+    </div>
+
+    <div class="section-title">Filtering</div>
+    <div class="option-group">
+      <div class="option-row">
+        <div>
+          <div class="option-label">Minimum Release Year</div>
+          <div class="option-sub">Filters out older catalog re-releases</div>
+        </div>
+        <select id="sel-year">
+          <option value="2025" selected>2025 or newer</option>
+          <option value="2026">2026 only</option>
+          <option value="2024">2024 or newer</option>
+          <option value="0">All Years</option>
+        </select>
+      </div>
+    </div>
+
+    <div class="btn-container">
+      <a href="#" id="btn-install" class="btn btn-primary">
+        <svg style="width: 18px; height: 18px; fill: currentColor;" viewBox="0 0 24 24">
+          <path d="M19.35 10.04C18.67 6.59 15.64 4 12 4 9.11 4 6.6 5.64 5.35 8.04 2.34 8.36 0 10.91 0 14c0 3.31 2.69 6 6 6h13c2.76 0 5-2.24 5-5 0-2.64-2.05-4.78-4.65-4.96zM17 13l-5 5-5-5h3V9h4v4h3z"/>
+        </svg>
+        Install to Stremio
+      </a>
+      <button id="btn-copy" class="btn btn-secondary" type="button">
+        <svg style="width: 16px; height: 16px; fill: currentColor;" viewBox="0 0 24 24">
+          <path d="M16 1H4c-1.1 0-2 .9-2 2v14h2V3h12V1zm3 4H8c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h11c1.1 0 2-.9 2-2V7c0-1.1-.9-2-2-2zm0 16H8V7h11v14z"/>
+        </svg>
+        Copy Manifest URL
+      </button>
+      <button id="btn-manual-sync" class="btn btn-secondary" style="font-size: 13px; padding: 10px;" type="button">
+        🔄 Refresh & Sync Feeds Now
+      </button>
+    </div>
+
+    <div class="footer-note">
+      Requires no API keys • Works with your existing stream addons<br>
+      Strict quality guarantee: No CAM or TeleSync releases.
+    </div>
+  </div>
+
+  <div id="toast" class="toast">Copied to clipboard!</div>
+
+  <script>
+    const chkMovies = document.getElementById('chk-movies');
+    const chkSeries = document.getElementById('chk-series');
+    const selYear = document.getElementById('sel-year');
+    const btnInstall = document.getElementById('btn-install');
+    const btnCopy = document.getElementById('btn-copy');
+    const btnSync = document.getElementById('btn-manual-sync');
+    const toast = document.getElementById('toast');
+
+    function showToast(msg) {
+      toast.innerText = msg;
+      toast.classList.add('show');
+      setTimeout(() => toast.classList.remove('show'), 2500);
+    }
+
+    function buildConfigString() {
+      const configObj = {
+        includeMovies: chkMovies.checked,
+        includeSeries: chkSeries.checked,
+        minYear: parseInt(selYear.value, 10)
+      };
+      return btoa(JSON.stringify(configObj));
+    }
+
+    function updateUrls() {
+      const configStr = buildConfigString();
+      const host = window.location.host;
+      const protocol = window.location.protocol;
+      
+      const manifestUrl = `${protocol}//${host}/${configStr}/manifest.json`;
+      const stremioUrl = `stremio://${host}/${configStr}/manifest.json`;
+
+      btnInstall.href = stremioUrl;
+      return manifestUrl;
+    }
+
+    [chkMovies, chkSeries, selYear].forEach(el => el.addEventListener('change', updateUrls));
+
+    btnCopy.addEventListener('click', () => {
+      const manifestUrl = updateUrls();
+      navigator.clipboard.writeText(manifestUrl).then(() => {
+        showToast('Manifest URL copied to clipboard!');
+      }).catch(() => {
+        prompt('Copy your manifest URL:', manifestUrl);
+      });
+    });
+
+    btnSync.addEventListener('click', async () => {
+      btnSync.disabled = true;
+      btnSync.innerText = 'Syncing releases in background...';
+      try {
+        const res = await fetch('/api/sync', { method: 'POST' });
+        const data = await res.json();
+        showToast(`Sync triggered! (Added: ${data.added || 0}, Updated: ${data.updated || 0})`);
+        setTimeout(() => window.location.reload(), 1500);
+      } catch (e) {
+        showToast('Sync request sent!');
+      } finally {
+        setTimeout(() => {
+          btnSync.disabled = false;
+          btnSync.innerText = '🔄 Refresh & Sync Feeds Now';
+        }, 3000);
+      }
+    });
+
+    // Initialize
+    updateUrls();
+  </script>
+</body>
+</html>

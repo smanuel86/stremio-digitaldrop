@@ -1,0 +1,15 @@
+version: '3.8'
+
+services:
+  digitaldrop:
+    build: .
+    container_name: stremio-digitaldrop
+    restart: unless-stopped
+    ports:
+      - "7000:7000"
+    environment:
+      - PORT=7000
+      - SYNC_INTERVAL_MINUTES=30
+      - MAX_YEAR_LOOKBACK=1
+    volumes:
+      - ./data:/app/data
