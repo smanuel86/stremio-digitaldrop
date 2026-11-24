@@ -472,6 +472,31 @@
     });
 
     // Initialize
+    function loadConfigFromUrl() {
+      const pathParts = window.location.pathname.split('/').filter(Boolean);
+      let configStr = '';
+      if (pathParts.length >= 2 && pathParts[pathParts.length - 1] === 'configure') {
+        configStr = pathParts[0];
+      }
+      if (!configStr) return;
+
+      try {
+        const json = atob(configStr);
+        const parsed = JSON.parse(json);
+        if (parsed.includeMovies !== undefined) chkMovies.checked = Boolean(parsed.includeMovies);
+        if (parsed.includeSeries !== undefined) chkSeries.checked = Boolean(parsed.includeSeries);
+        if (parsed.minYear !== undefined) selYear.value = parsed.minYear.toString();
+        if (Array.isArray(parsed.platforms)) {
+          platCheckboxes.forEach(cb => {
+            cb.checked = parsed.platforms.includes(cb.value);
+          });
+        }
+      } catch (e) {
+        // If not base64 or failed, keep defaults
+      }
+    }
+
+    loadConfigFromUrl();
     updateUrls();
   </script>
 </body>
