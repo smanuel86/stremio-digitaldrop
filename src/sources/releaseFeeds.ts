@@ -22,6 +22,20 @@ export class ReleaseFeedsSource {
   }
 
   /**
+   * Detect streaming service code in release title
+   */
+  private detectService(raw: string): string | undefined {
+    if (/\b(NF|NFLX|NETFLIX)\b/i.test(raw)) return 'netflix';
+    if (/\b(ATVP|APPLE|APPLETV)\b/i.test(raw)) return 'apple-tv-plus';
+    if (/\b(AMZN|PRIME)\b/i.test(raw)) return 'prime-video';
+    if (/\b(HMAX|MAX)\b/i.test(raw)) return 'max';
+    if (/\b(DSNP|DISNEY)\b/i.test(raw)) return 'disney-plus';
+    if (/\b(PMTP|PARAMOUNT)\b/i.test(raw)) return 'paramount-plus';
+    if (/\b(PCOK|PEACOCK)\b/i.test(raw)) return 'peacock';
+    return undefined;
+  }
+
+  /**
    * Extract clean title, year, and type from a scene/torrent release title
    * e.g. "Insidious.Out.Of.The.Further.2026.1080p.BluRay.H264-RiSEHD"
    * e.g. "The.Gilded.Age.S04E04.MULTI.1080p.WEB.H264-BAWLS"
@@ -105,6 +119,7 @@ export class ReleaseFeedsSource {
             digital_date: todayStr,
             source: 'scene-feed',
             quality: rawTitle.includes('BluRay') ? 'BluRay' : 'WEB-DL',
+            service: this.detectService(rawTitle),
           });
         }
       } catch (err: any) {
@@ -150,6 +165,7 @@ export class ReleaseFeedsSource {
           digital_date: digitalDate,
           source: 'eztv',
           quality: title.includes('2160p') ? '4K WEB-DL' : 'WEB-DL',
+          service: this.detectService(title),
         });
       }
     } catch (err: any) {

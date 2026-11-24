@@ -20,9 +20,13 @@ Never open Stremio to see a theatrical poster with only CAM or TeleSync streams 
 
 - **Strict "Digital Only" Guarantee**: Filters out theatrical-only releases and low-grade recordings (CAM, TS, HDCAM, TELESYNC).
 - **Multi-Source Ingestion**:
-  - **Rotten Tomatoes**: Scrapes *Movies at Home* (pages 1 & 2) and *TV Series* popular drops.
+  - **Rotten Tomatoes**: Scrapes *Movies at Home* (pages 1 & 2), *TV Series*, and dedicated streaming platform drops.
   - **Blu-ray.com**: Scrapes the official *Digital Release Dates Calendar* across all major VOD platforms.
   - **Scene & Torrent Trackers**: Captures real-time digital drops (EZTV, PreDB WEB-DL feeds).
+- **Streaming Service Filters & Carousels**:
+  - Dedicated toggleable carousels for: **Netflix**, **Apple TV+**, **Amazon Prime Video**, **Max (HBO)**, **Disney+**, **Paramount+**, and **Peacock**.
+  - Dropdown platform filters directly in Stremio's genre selector.
+  - Single primary network tagging to eliminate duplicate clutter across platforms.
 - **Zero-Config Metadata Resolution**: Automatically matches releases to official IMDb IDs, high-resolution posters, genres, and synopsis via Stremio's native Cinemeta. **No API keys or signup required.**
 - **Instant Stremio Loading**: Catalog data is cached locally in an embedded **SQLite database**, ensuring carousels load immediately without lag.
 - **Automated 30-Minute Sync**: A background worker continuously checks feeds and updates your catalogs.

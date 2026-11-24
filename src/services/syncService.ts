@@ -23,19 +23,21 @@ export class SyncService {
 
     try {
       // 1. Fetch from all sources in parallel
-      const [rtMovies, rtSeries, blurayItems, predbItems, eztvItems] = await Promise.all([
+      const [rtMovies, rtSeries, rtPlatforms, blurayItems, predbItems, eztvItems] = await Promise.all([
         rottenTomatoesSource.fetchMoviesAtHome(2),
         rottenTomatoesSource.fetchTvSeries(),
+        rottenTomatoesSource.fetchAllPlatforms(),
         bluraySource.fetchDigitalReleases(),
         releaseFeedsSource.fetchPreDbFeeds(),
         releaseFeedsSource.fetchEztvReleases(),
       ]);
 
       console.log(
-        `[SyncService] Fetched candidates: RottenTomatoes Movies=${rtMovies.length}, Series=${rtSeries.length} | Blu-ray.com=${blurayItems.length} | PreDB=${predbItems.length} | EZTV=${eztvItems.length}`
+        `[SyncService] Fetched candidates: RT Movies=${rtMovies.length}, Series=${rtSeries.length}, Platforms=${rtPlatforms.length} | Blu-ray.com=${blurayItems.length} | PreDB=${predbItems.length} | EZTV=${eztvItems.length}`
       );
 
       const allCandidates: ReleaseCandidate[] = [
+        ...rtPlatforms, // Platform-specific candidates first to ensure primary service tag
         ...rtMovies,
         ...rtSeries,
         ...blurayItems,
@@ -82,6 +84,7 @@ export class SyncService {
             genres: meta.genres,
             source: candidate.source,
             quality: candidate.quality,
+            service: candidate.service,
             imdb_rating: meta.imdb_rating,
           });
 

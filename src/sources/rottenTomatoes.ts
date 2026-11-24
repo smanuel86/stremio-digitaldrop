@@ -8,6 +8,7 @@ export interface ReleaseCandidate {
   digital_date: string; // YYYY-MM-DD
   source: string;
   quality: string;
+  service?: string; // e.g. "netflix", "apple-tv-plus", etc.
 }
 
 export class RottenTomatoesSource {
@@ -174,6 +175,74 @@ export class RottenTomatoesSource {
     }
 
     return candidates;
+  }
+
+  public async fetchPlatformReleases(service: string, affiliateParam: string): Promise<ReleaseCandidate[]> {
+    const candidates: ReleaseCandidate[] = [];
+    const currentYear = new Date().getFullYear();
+    const todayStr = new Date().toISOString().split('T')[0];
+    const minYear = currentYear - CONFIG.MAX_YEAR_LOOKBACK;
+
+    const endpoints = [
+      { type: 'movie' as const, path: `movies_at_home/${affiliateParam}` },
+      { type: 'series' as const, path: `tv_series_browse/${affiliateParam}` },
+    ];
+
+    for (const ep of endpoints) {
+      try {
+        const url = `https://www.rottentomatoes.com/cnapi/browse/${ep.path}`;
+        const res = await axios.get(url, {
+          headers: this.baseHeaders,
+          timeout: 10000,
+        });
+
+        const list = res.data?.grid?.list || [];
+        for (const item of list) {
+          const title = item.title;
+          if (!title) continue;
+
+          const digitalDate = this.parseReleaseDate(item.releaseDateText, currentYear) || todayStr;
+          if (digitalDate > todayStr) continue;
+
+          let year = currentYear;
+          if (digitalDate) year = parseInt(digitalDate.split('-')[0], 10);
+          if (year < minYear) continue;
+
+          candidates.push({
+            title,
+            year,
+            type: ep.type,
+            digital_date: digitalDate,
+            source: `rt-${service}`,
+            quality: 'WEB-DL',
+            service,
+          });
+        }
+      } catch (err: any) {
+        // Silently skip if a platform endpoint fails
+      }
+    }
+
+    return candidates;
+  }
+
+  public async fetchAllPlatforms(): Promise<ReleaseCandidate[]> {
+    const platforms: { service: string; param: string }[] = [
+      { service: 'netflix', param: 'affiliates:netflix' },
+      { service: 'apple-tv-plus', param: 'affiliates:apple-tv-plus' },
+      { service: 'prime-video', param: 'affiliates:prime-video' },
+      { service: 'max', param: 'affiliates:max' },
+      { service: 'disney-plus', param: 'affiliates:disney-plus' },
+      { service: 'paramount-plus', param: 'affiliates:paramount-plus' },
+      { service: 'peacock', param: 'affiliates:peacock' },
+    ];
+
+    const results: ReleaseCandidate[] = [];
+    for (const p of platforms) {
+      const items = await this.fetchPlatformReleases(p.service, p.param);
+      results.push(...items);
+    }
+    return results;
   }
 }
 

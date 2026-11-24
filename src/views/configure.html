@@ -37,14 +37,14 @@
       background: var(--card-bg);
       border: 1px solid var(--border);
       border-radius: 16px;
-      max-width: 540px;
+      max-width: 560px;
       width: 100%;
       padding: 32px 28px;
       box-shadow: 0 10px 40px rgba(0,0,0,0.5);
     }
     .header {
       text-align: center;
-      margin-bottom: 28px;
+      margin-bottom: 24px;
     }
     .logo-badge {
       display: inline-flex;
@@ -54,7 +54,7 @@
       height: 64px;
       background: linear-gradient(135deg, #6c5ce7, #a29bfe);
       border-radius: 16px;
-      margin-bottom: 16px;
+      margin-bottom: 14px;
       box-shadow: 0 8px 24px var(--accent-glow);
     }
     .logo-badge svg {
@@ -78,7 +78,7 @@
       border: 1px solid var(--border);
       border-radius: 12px;
       padding: 12px 16px;
-      margin-bottom: 24px;
+      margin-bottom: 22px;
       display: flex;
       justify-content: space-around;
       text-align: center;
@@ -101,27 +101,27 @@
       text-transform: uppercase;
       letter-spacing: 0.8px;
       color: var(--text-muted);
-      margin-bottom: 12px;
+      margin-bottom: 10px;
     }
     .option-group {
       background: rgba(255, 255, 255, 0.02);
       border: 1px solid var(--border);
       border-radius: 12px;
       padding: 6px 16px;
-      margin-bottom: 20px;
+      margin-bottom: 18px;
     }
     .option-row {
       display: flex;
       align-items: center;
       justify-content: space-between;
-      padding: 12px 0;
+      padding: 10px 0;
       border-bottom: 1px solid rgba(255, 255, 255, 0.05);
     }
     .option-row:last-child {
       border-bottom: none;
     }
     .option-label {
-      font-size: 15px;
+      font-size: 14px;
       font-weight: 500;
     }
     .option-sub {
@@ -133,8 +133,8 @@
     .switch {
       position: relative;
       display: inline-block;
-      width: 44px;
-      height: 24px;
+      width: 40px;
+      height: 22px;
     }
     .switch input {
       opacity: 0;
@@ -147,13 +147,13 @@
       top: 0; left: 0; right: 0; bottom: 0;
       background-color: #2e3340;
       transition: .25s;
-      border-radius: 24px;
+      border-radius: 22px;
     }
     .slider:before {
       position: absolute;
       content: "";
-      height: 18px;
-      width: 18px;
+      height: 16px;
+      width: 16px;
       left: 3px;
       bottom: 3px;
       background-color: white;
@@ -164,7 +164,7 @@
       background-color: var(--accent);
     }
     input:checked + .slider:before {
-      transform: translateX(20px);
+      transform: translateX(18px);
     }
     /* Select */
     select {
@@ -173,14 +173,43 @@
       color: var(--text);
       padding: 6px 10px;
       border-radius: 8px;
-      font-size: 14px;
+      font-size: 13px;
       outline: none;
+    }
+    .platforms-grid {
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap: 8px;
+      margin-top: 6px;
+      margin-bottom: 6px;
+    }
+    .platform-item {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      background: rgba(255, 255, 255, 0.03);
+      padding: 8px 12px;
+      border-radius: 8px;
+      cursor: pointer;
+      user-select: none;
+      font-size: 13px;
+      border: 1px solid transparent;
+      transition: all 0.2s;
+    }
+    .platform-item:hover {
+      background: rgba(255, 255, 255, 0.06);
+    }
+    .platform-item input[type="checkbox"] {
+      accent-color: var(--accent);
+      width: 16px;
+      height: 16px;
+      cursor: pointer;
     }
     .btn-container {
       display: flex;
       flex-direction: column;
       gap: 10px;
-      margin-top: 24px;
+      margin-top: 22px;
     }
     .btn {
       display: flex;
@@ -188,9 +217,9 @@
       justify-content: center;
       gap: 8px;
       width: 100%;
-      padding: 14px;
+      padding: 13px;
       border-radius: 12px;
-      font-size: 15px;
+      font-size: 14px;
       font-weight: 600;
       cursor: pointer;
       transition: all 0.2s ease;
@@ -220,12 +249,8 @@
       text-align: center;
       font-size: 12px;
       color: var(--text-muted);
-      margin-top: 18px;
+      margin-top: 16px;
       line-height: 1.4;
-    }
-    .footer-note a {
-      color: var(--accent);
-      text-decoration: none;
     }
     .toast {
       visibility: hidden;
@@ -236,7 +261,7 @@
       border-radius: 8px;
       padding: 10px 16px;
       position: fixed;
-      z-index: 1;
+      z-index: 10;
       bottom: 30px;
       font-size: 14px;
       opacity: 0;
@@ -275,12 +300,12 @@
       </div>
     </div>
 
-    <div class="section-title">Carousels</div>
+    <div class="section-title">Core Carousels</div>
     <div class="option-group">
       <div class="option-row">
         <div>
           <div class="option-label">🎬 Latest Digital Movies</div>
-          <div class="option-sub">Rotten Tomatoes & Blu-ray.com verified drops</div>
+          <div class="option-sub">Rotten Tomatoes & Blu-ray.com drops</div>
         </div>
         <label class="switch">
           <input type="checkbox" id="chk-movies" checked>
@@ -295,6 +320,40 @@
         <label class="switch">
           <input type="checkbox" id="chk-series" checked>
           <span class="slider"></span>
+        </label>
+      </div>
+    </div>
+
+    <div class="section-title">Dedicated Streaming Carousels</div>
+    <div class="option-group">
+      <div class="platforms-grid">
+        <label class="platform-item">
+          <input type="checkbox" class="chk-plat" value="netflix" checked>
+          <span>🔴 Netflix</span>
+        </label>
+        <label class="platform-item">
+          <input type="checkbox" class="chk-plat" value="apple-tv-plus" checked>
+          <span>🍏 Apple TV+</span>
+        </label>
+        <label class="platform-item">
+          <input type="checkbox" class="chk-plat" value="prime-video" checked>
+          <span>📦 Prime Video</span>
+        </label>
+        <label class="platform-item">
+          <input type="checkbox" class="chk-plat" value="max" checked>
+          <span>🟣 Max (HBO)</span>
+        </label>
+        <label class="platform-item">
+          <input type="checkbox" class="chk-plat" value="disney-plus" checked>
+          <span>✨ Disney+</span>
+        </label>
+        <label class="platform-item">
+          <input type="checkbox" class="chk-plat" value="paramount-plus">
+          <span>🔵 Paramount+</span>
+        </label>
+        <label class="platform-item" style="grid-column: span 2;">
+          <input type="checkbox" class="chk-plat" value="peacock">
+          <span>🦚 Peacock</span>
         </label>
       </div>
     </div>
@@ -344,6 +403,7 @@
   <script>
     const chkMovies = document.getElementById('chk-movies');
     const chkSeries = document.getElementById('chk-series');
+    const platCheckboxes = document.querySelectorAll('.chk-plat');
     const selYear = document.getElementById('sel-year');
     const btnInstall = document.getElementById('btn-install');
     const btnCopy = document.getElementById('btn-copy');
@@ -357,10 +417,15 @@
     }
 
     function buildConfigString() {
+      const selectedPlatforms = Array.from(platCheckboxes)
+        .filter(cb => cb.checked)
+        .map(cb => cb.value);
+
       const configObj = {
         includeMovies: chkMovies.checked,
         includeSeries: chkSeries.checked,
-        minYear: parseInt(selYear.value, 10)
+        minYear: parseInt(selYear.value, 10),
+        platforms: selectedPlatforms
       };
       return btoa(JSON.stringify(configObj));
     }
@@ -377,7 +442,7 @@
       return manifestUrl;
     }
 
-    [chkMovies, chkSeries, selYear].forEach(el => el.addEventListener('change', updateUrls));
+    [chkMovies, chkSeries, selYear, ...platCheckboxes].forEach(el => el.addEventListener('change', updateUrls));
 
     btnCopy.addEventListener('click', () => {
       const manifestUrl = updateUrls();

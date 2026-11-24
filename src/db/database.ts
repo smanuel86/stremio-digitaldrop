@@ -15,6 +15,7 @@ export interface ReleaseRecord {
   genres: string[]; // parsed from JSON
   source: string; // e.g. "rottentomatoes", "bluray", "feed"
   quality: string; // e.g. "WEB-DL", "BluRay"
+  service?: string | null; // e.g. "netflix", "apple-tv-plus", "prime-video", "max", "disney-plus"
   imdb_rating?: number | null;
   created_at: number;
   updated_at: number;
@@ -47,6 +48,7 @@ class ReleaseDatabase {
         genres TEXT,
         source TEXT,
         quality TEXT,
+        service TEXT,
         imdb_rating REAL,
         created_at INTEGER NOT NULL,
         updated_at INTEGER NOT NULL
@@ -61,12 +63,21 @@ class ReleaseDatabase {
         updated_at INTEGER NOT NULL
       );
     `);
+
+    // Migration: add service column if table already existed without it
+    try {
+      this.db.exec(`ALTER TABLE releases ADD COLUMN service TEXT;`);
+    } catch {}
+
+    try {
+      this.db.exec(`CREATE INDEX IF NOT EXISTS idx_releases_service ON releases(service, digital_date DESC);`);
+    } catch {}
   }
 
   public upsertRelease(item: Omit<ReleaseRecord, 'created_at' | 'updated_at'>): boolean {
     const now = Date.now();
-    const existing = this.db.prepare('SELECT imdb_id, digital_date FROM releases WHERE imdb_id = ?').get(item.imdb_id) as
-      | { imdb_id: string; digital_date: string }
+    const existing = this.db.prepare('SELECT imdb_id, digital_date, service FROM releases WHERE imdb_id = ?').get(item.imdb_id) as
+      | { imdb_id: string; digital_date: string; service?: string }
       | undefined;
 
     const genresJson = JSON.stringify(item.genres || []);
@@ -77,6 +88,8 @@ class ReleaseDatabase {
         item.digital_date && (!existing.digital_date || item.digital_date < existing.digital_date)
           ? item.digital_date
           : existing.digital_date;
+
+      const effectiveService = item.service || existing.service || null;
 
       this.db
         .prepare(
@@ -91,6 +104,7 @@ class ReleaseDatabase {
           genres = ?,
           source = ?,
           quality = ?,
+          service = ?,
           imdb_rating = COALESCE(?, imdb_rating),
           updated_at = ?
         WHERE imdb_id = ?
@@ -106,6 +120,7 @@ class ReleaseDatabase {
           genresJson,
           item.source,
           item.quality,
+          effectiveService,
           item.imdb_rating ?? null,
           now,
           item.imdb_id
@@ -117,8 +132,8 @@ class ReleaseDatabase {
           `
         INSERT INTO releases (
           imdb_id, type, title, year, digital_date, poster, background, description,
-          genres, source, quality, imdb_rating, created_at, updated_at
-        ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
+          genres, source, quality, service, imdb_rating, created_at, updated_at
+        ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
       `
         )
         .run(
@@ -133,6 +148,7 @@ class ReleaseDatabase {
           genresJson,
           item.source,
           item.quality,
+          item.service || null,
           item.imdb_rating ?? null,
           now,
           now
@@ -144,6 +160,7 @@ class ReleaseDatabase {
   public getCatalog(
     type: 'movie' | 'series',
     genre?: string,
+    service?: string,
     minYear?: number,
     skip: number = 0,
     limit: number = 50
@@ -156,7 +173,12 @@ class ReleaseDatabase {
       params.push(minYear);
     }
 
-    if (genre && genre !== 'All') {
+    if (service && service !== 'all') {
+      query += ' AND service = ?';
+      params.push(service);
+    }
+
+    if (genre && genre !== 'All' && !genre.startsWith('[')) {
       query += ' AND genres LIKE ?';
       params.push(`%"${genre}"%`);
     }
